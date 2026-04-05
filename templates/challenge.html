@@ -44,7 +44,8 @@
                                     </div>
                                     <div class="form-check mb-3">
                                         <input class="form-check-input" type="checkbox" id="challenge_completed"
-                                               {% if tracking.challenge_completed %}checked{% endif %}>
+                                               {% if tracking.challenge_completed %}checked{% endif %}
+                                               {% if not (tracking.water_completed and tracking.food_completed and tracking.workout_completed) %}disabled{% endif %}>
                                         <label class="form-check-label" for="challenge_completed">
                                             Daily Health Challenge Completed
                                         </label>
@@ -159,11 +160,27 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    [waterCb, foodCb, workoutCb, challengeCb].forEach(cb => {
+    function updateChallengeDisabled() {
+        const allThreeCompleted = waterCb.checked && foodCb.checked && workoutCb.checked;
+        challengeCb.disabled = !allThreeCompleted;
+        if (!allThreeCompleted) {
+            challengeCb.checked = false; // Uncheck if disabling
+        }
+    }
+
+    [waterCb, foodCb, workoutCb].forEach(cb => {
         if (cb) {
-            cb.addEventListener("change", sendUpdate);
+            cb.addEventListener("change", function() {
+                updateChallengeDisabled();
+                sendUpdate();
+            });
         }
     });
+
+    challengeCb.addEventListener("change", sendUpdate);
+
+    // Initial check
+    updateChallengeDisabled();
 });
 </script>
 {% endblock %}
