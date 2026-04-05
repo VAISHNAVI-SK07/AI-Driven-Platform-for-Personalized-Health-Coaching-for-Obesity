@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-layout row gx-4 gy-4">
+    <div class="col-lg-8">
+        <div class="card page-card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+                    <div>
+                        <h1 class="section-title mb-2">Personalized Workout Plan</h1>
+                        <p class="text-muted mb-0">Build a workout routine tailored to your BMI category and fitness level.</p>
+                    </div>
+                    <span class="badge bg-primary py-2 px-3">Step 3 of 4</span>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="plan-card p-4 rounded-4 bg-light h-100">
+                            <h5>Level</h5>
+                            <p class="display-6 fw-bold mb-0">{{ plan.level }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="plan-card p-4 rounded-4 bg-light h-100">
+                            <h5>Duration</h5>
+                            <p class="display-6 fw-bold mb-0">{{ plan.duration }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="plan-card p-4 rounded-4 bg-light h-100">
+                            <h5>BMI Category</h5>
+                            <p class="display-6 fw-bold mb-0">{{ user.category }}</p>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="plan-card p-4 rounded-4 bg-light">
+                            <h5>Exercises</h5>
+                            <ul class="mb-0">
+                                {% for item in plan.exercises %}
+                                    <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h5>Trainer note</h5>
+                    <p class="text-muted">{{ plan.advice }}</p>
+                </div>
+
+                <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
+                    <a href="{{ url_for('challenge') }}" class="btn btn-success btn-lg">Next → Daily Challenge</a>
+                    <a href="{{ url_for('diet') }}" class="btn btn-outline-secondary btn-lg">Back to Diet</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <aside class="card sidebar-card shadow-sm">
+            <div class="card-body">
+                <h5 class="mb-3">Motivation & Status</h5>
+                <ul class="list-unstyled mb-4 sidebar-quotes">
+                    {% for quote_text in quotes %}
+                        <li class="mb-3">
+                            <span class="quote-mark">“</span>{{ quote_text }}<span class="quote-mark">”</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="sidebar-status p-3 rounded-3 bg-primary text-white">
+                    <strong>Workout Focus</strong>
+                    <p class="mb-1 mt-2">{{ plan.level }} training</p>
+                    <small class="d-block">Stick with the routine and review your progress regularly.</small>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}

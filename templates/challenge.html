@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-layout row gx-4 gy-4">
+    <div class="col-lg-8">
+        <div class="card page-card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+                    <div>
+                        <h1 class="section-title mb-2">Daily Health Challenge</h1>
+                        <p class="text-muted mb-0">Complete your daily goals to stay on track with your health journey.</p>
+                    </div>
+                    <span class="badge bg-success py-2 px-3">Step 4 of 4</span>
+                </div>
+
+                {% if tracking %}
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Today’s Tracking</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="tracking-form">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="water_completed"
+                                               {% if tracking.water_completed %}checked{% endif %}>
+                                        <label class="form-check-label" for="water_completed">
+                                            Water Intake Completed
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="food_completed"
+                                               {% if tracking.food_completed %}checked{% endif %}>
+                                        <label class="form-check-label" for="food_completed">
+                                            Food Target Completed
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="workout_completed"
+                                               {% if tracking.workout_completed %}checked{% endif %}>
+                                        <label class="form-check-label" for="workout_completed">
+                                            Workout Completed
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="challenge_completed"
+                                               {% if tracking.challenge_completed %}checked{% endif %}>
+                                        <label class="form-check-label" for="challenge_completed">
+                                            Daily Health Challenge Completed
+                                        </label>
+                                    </div>
+                                </form>
+
+                                <p class="mb-1"><strong>Progress</strong></p>
+                                <div class="progress progress-lg mb-2">
+                                    <div id="progress-bar" class="progress-bar bg-success"
+                                         style="width: {{ tracking.progress_percent }}%;">
+                                        {{ tracking.progress_percent }}%
+                                    </div>
+                                </div>
+                                <div id="tracking-message" class="small text-muted">
+                                    {% if tracking.progress_percent == 100 %}
+                                        Congratulations! You have completed all your health goals for today.
+                                    {% elif tracking.progress_percent >= 50 %}
+                                        Great job. You're more than halfway there – keep going!
+                                    {% elif tracking.progress_percent > 0 %}
+                                        Good start! Keep ticking off your goals.
+                                    {% else %}
+                                        Start by completing one small task now.
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <strong>Note:</strong> Daily tracking is available for registered users. Please login to track your progress.
+                </div>
+                {% endif %}
+
+                <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
+                    <a href="{{ url_for('bmi_calculator') }}" class="btn btn-primary btn-lg">Finish & Restart</a>
+                    <a href="{{ url_for('workout') }}" class="btn btn-outline-secondary btn-lg">Back to Workout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <aside class="card sidebar-card shadow-sm">
+            <div class="card-body">
+                <h5 class="mb-3">Motivation & Status</h5>
+                <p class="mb-4"><strong>Quote of the Day:</strong> "{{ quote.quote_text }}"
+                    {% if quote.author and quote.author != 'Unknown' %}
+                        &nbsp;&ndash;&nbsp;{{ quote.author }}
+                    {% endif %}
+                </p>
+                {% if admin_messages %}
+                <div class="sidebar-status p-3 rounded-3 bg-info text-white mb-3">
+                    <strong>Admin Messages</strong>
+                    {% for msg in admin_messages %}
+                    <p class="mb-1 mt-2 small">{{ msg.message }}</p>
+                    <small class="d-block">{{ msg.created_at.strftime('%Y-%m-%d') }}</small>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="sidebar-status p-3 rounded-3 bg-success text-white">
+                    <strong>Daily Challenge</strong>
+                    <p class="mb-1 mt-2">Stay consistent</p>
+                    <small class="d-block">Complete your goals and track your progress.</small>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+// Daily tracking AJAX logic for challenge page
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("tracking-form");
+    if (!form) {
+        return;
+    }
+
+    const waterCb = document.getElementById("water_completed");
+    const foodCb = document.getElementById("food_completed");
+    const workoutCb = document.getElementById("workout_completed");
+    const challengeCb = document.getElementById("challenge_completed");
+    const progressBar = document.getElementById("progress-bar");
+    const trackingMessage = document.getElementById("tracking-message");
+
+    function sendUpdate() {
+        const payload = {
+            water_completed: waterCb.checked,
+            food_completed: foodCb.checked,
+            workout_completed: workoutCb.checked,
+            challenge_completed: challengeCb.checked
+        };
+
+        fetch("/user/daily-tracking", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(resp => resp.json())
+            .then(data => {
+                if (data && data.success) {
+                    const progress = data.progress;
+                    progressBar.style.width = progress + "%";
+                    progressBar.textContent = progress + "%";
+                    trackingMessage.textContent = data.message;
+                }
+            })
+            .catch(err => {
+                console.error("Tracking update failed", err);
+            });
+    }
+
+    [waterCb, foodCb, workoutCb, challengeCb].forEach(cb => {
+        if (cb) {
+            cb.addEventListener("change", sendUpdate);
+        }
+    });
+});
+</script>
+{% endblock %}
+

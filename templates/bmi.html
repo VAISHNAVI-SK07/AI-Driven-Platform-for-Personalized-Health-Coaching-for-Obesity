@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-layout row gx-4 gy-4">
+    <div class="col-lg-8">
+        <div class="card page-card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+                    <div>
+                        <h1 class="section-title mb-2">BMI Calculator</h1>
+                        <p class="text-muted mb-0">Enter your details to calculate BMI and receive a personalized wellness plan.</p>
+                    </div>
+                    <span class="badge bg-primary py-2 px-3">Step 1 of 4</span>
+                </div>
+
+                <form method="post" class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Name</label>
+                        <input name="name" type="text" class="form-control" placeholder="Your name" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Age</label>
+                        <input name="age" type="number" min="10" class="form-control" placeholder="Age" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Gender</label>
+                        <select name="gender" class="form-select" required>
+                            <option value="">Select gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Height (cm)</label>
+                        <input name="height" type="number" min="50" step="0.1" class="form-control" placeholder="e.g. 170" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Weight (kg)</label>
+                        <input name="weight" type="number" min="20" step="0.1" class="form-control" placeholder="e.g. 70" required>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-primary btn-lg">Calculate BMI</button>
+                    </div>
+                </form>
+
+                {% if saved %}
+                    <div class="result-panel rounded-4 border border-success bg-light p-4 mt-4">
+                        <h2 class="h4 mb-3">Your BMI is {{ bmi_result }}</h2>
+                        <p class="mb-2">Category: <strong>{{ bmi_category }}</strong></p>
+                        <p class="text-muted mb-3">This result is saved to your coaching profile and will shape your personalized diet and workout plan.</p>
+                        <a href="{{ url_for('diet') }}" class="btn btn-success">Next &rarr; Diet Plan</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <aside class="card sidebar-card shadow-sm">
+            <div class="card-body">
+                <h5 class="mb-3">Motivation & Status</h5>
+                <p class="mb-4"><strong>Quote of the Day:</strong> "{{ quote.quote_text }}"
+                    {% if quote.author and quote.author != 'Unknown' %}
+                        &nbsp;&ndash;&nbsp;{{ quote.author }}
+                    {% endif %}
+                </p>
+                {% if bmi_category %}
+                    <div class="sidebar-status p-3 rounded-3 bg-primary text-white">
+                        <strong>Current BMI Status</strong>
+                        <p class="mb-1 mt-2">{{ bmi_category }}</p>
+                        <small class="d-block">Great job taking the first step toward a healthier lifestyle.</small>
+                    </div>
+                {% else %}
+                    <div class="sidebar-status p-3 rounded-3 bg-secondary text-white">
+                        <strong>Ready when you are</strong>
+                        <p class="mb-0 mt-2">Fill in your details and begin your journey.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}

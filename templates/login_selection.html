@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white text-center">
+                <h5 class="mb-0">Welcome to AI Health Coach</h5>
+            </div>
+            <div class="card-body text-center">
+                <p class="mb-4">Choose your login type to access personalized health coaching.</p>
+                <div class="d-grid gap-3">
+                    <a href="{{ url_for('user_login') }}" class="btn btn-primary btn-lg">User Login</a>
+                    <a href="{{ url_for('admin_login') }}" class="btn btn-outline-primary btn-lg">Admin Login</a>
+                </div>
+                <hr class="my-4">
+                <p class="mb-0">New user? <a href="{{ url_for('user_register') }}">Register here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

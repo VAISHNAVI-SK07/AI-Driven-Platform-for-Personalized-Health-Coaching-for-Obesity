@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero-banner mb-4 p-4 p-lg-5 rounded-4 shadow-lg position-relative overflow-hidden">
+    <div class="hero-content">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h1 class="display-5 fw-bold mb-3">Personalized AI coaching to support your obesity journey.</h1>
+                <p class="lead mb-4">Track your BMI, improve daily habits, and receive tailored nutrition and workout guidance in one beautiful platform.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-light btn-lg" href="{{ url_for('user_register') }}">Start Your Journey</a>
+                    <a class="btn btn-outline-light btn-lg" href="{{ url_for('user_login') }}">Login</a>
+                </div>
+            </div>
+            <div class="col-lg-5 mt-4 mt-lg-0">
+                <div class="dashboard-highlight">
+                    <p class="mb-2 text-uppercase text-white-50 small">Your daily health support</p>
+                    <div class="mb-3">
+                        <strong>Consistency advice</strong>
+                        <p class="mb-0 text-white-75">{{ consistency_message }}</p>
+                    </div>
+                    <div>
+                        <strong>Motivation for today</strong>
+                        <p class="mb-0 text-white-75">"{{ quote.quote_text }}"{% if quote.author and quote.author != 'Unknown' %} &ndash; {{ quote.author }}{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row gy-3 mb-4">
+    <div class="col-md-4">
+        <div class="card feature-card p-3 h-100">
+            <div class="icon mb-3">🍎</div>
+            <h5>Nutrition Guidance</h5>
+            <p class="mb-0 text-muted">Receive meal recommendations tailored to your calorie goals and preferences.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card feature-card p-3 h-100">
+            <div class="icon mb-3">🏃</div>
+            <h5>Workout Support</h5>
+            <p class="mb-0 text-muted">Build a sustainable exercise plan that fits your fitness level and schedule.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card feature-card p-3 h-100">
+            <div class="icon mb-3">📊</div>
+            <h5>Progress Tracking</h5>
+            <p class="mb-0 text-muted">Monitor daily goals, BMI progress, and stay motivated with visual tracking.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h3 class="card-title mb-3">Welcome to your AI Health Coach</h3>
+                <p class="lead">{{ consistency_message }}</p>
+                <p>
+                    This platform helps you track your BMI, daily habits, and get AI-assisted
+                    food and workout plans to fight obesity.
+                </p>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <a class="btn btn-primary" href="{{ url_for('user_register') }}">Get Started – Register</a>
+                    <a class="btn btn-outline-primary" href="{{ url_for('user_login') }}">User Login</a>
+                    <a class="btn btn-outline-secondary" href="{{ url_for('admin_login') }}">Admin Login</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Daily Motivational Quote</h5>
+                <blockquote class="blockquote mb-0">
+                    <p class="mb-1">"{{ quote.quote_text }}"</p>
+                    {% if quote.author and quote.author != 'Unknown' %}
+                        <footer class="blockquote-footer">&mdash; {{ quote.author }}</footer>
+                    {% endif %}
+                </blockquote>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-success text-white">
+                Consistency Reminder
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    {% for r in global_reminders %}
+                        <li class="mb-2"><span class="badge bg-success me-2">Tip</span>{{ r }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
